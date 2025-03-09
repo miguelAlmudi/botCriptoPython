@@ -121,6 +121,7 @@ def start():
         CARTEIRA = valorCompra
         ultimaCompra = 0
         vendas = 0
+        margemLucro = 0
 
     if rsi < 35 and ((CARTEIRA - valorCompra) >= 0) and not isOpened:  #so compra se o valor da carteira nao ficar negativo
         print("sobrevendido, hora de comprar")
@@ -128,18 +129,20 @@ def start():
         # new_order(SYMBOL, QUANTITY, "BUY")        
         CARTEIRA = CARTEIRA - valorCompra
         ultimaCompra = valorCompra
+        margemLucro = (0.05) * ultimaCompra #margem de lucro 5%
         flag = 1
 
-    elif rsi > 65 and isOpened and (valorVenda > ultimaCompra):         #so vende se o valorCompra for maior que a (quantidade comprada + taxa venda)
+    elif rsi > 65 and isOpened and (valorVenda > (ultimaCompra + margemLucro)):         #so vende se o valorCompra for maior que a (ultima compra + lucro)
         print("sobrecomprado, hora de vender")
         # new_order(SYMBOL, QUANTITY, "SELL")
         isOpened = False
         CARTEIRA = CARTEIRA + valorVenda
         vendas = vendas + 1
     else:
-        print("aguardar")
+        print("aguardando")
         print(f"ultima compra: {ultimaCompra}")
-        print(f"Vendas: {vendas}")
+        print(f"Vender quando chegar em: {(ultimaCompra + margemLucro)}")
+        print(f"Vendas feitas: {vendas}")
         print(f"Valor na carteira: {CARTEIRA}")
 
 if __name__ == "__main__":
